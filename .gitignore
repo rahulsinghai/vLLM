@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model weights & caches
+*.bin
+*.safetensors
+*.pt
+*.ckpt
+huggingface_cache/
+
+# Logs & temp
+*.log
+/tmp/
+*.tmp
+
+# Secrets
+.env
+.env.*
+credentials.json
+**/secrets/
+
+# Benchmark output
+/tmp/vllm-*.txt
+
+# Grafana / Prometheus data volumes
+grafana-data/
+prometheus-data/
+.history/

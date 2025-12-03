@@ -1,0 +1,72 @@
+[project]
+name = "vllm-tutorial"
+version = "0.1.0"
+description = "Hands-on tutorial for deploying vLLM as a production LLM inference server"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    "vllm~=0.16.0",
+    "openai~=2.24.0",
+    "requests~=2.32.5",
+    "aiohttp~=3.13.3",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest~=9.0.2",
+    "ruff~=0.15.4",
+]
+
+[tool.ruff]
+line-length = 200
+indent-width = 4
+exclude = []
+
+[tool.ruff.lint]
+select = [
+    "ANN",  # flake8-annotations (type hint enforcement)
+    "B",    # flake8-bugbear (common bugs / anti-patterns)
+    "C4",   # flake8-comprehensions (inefficient comprehensions)
+    "E",    # pycodestyle (style errors)
+    "F",    # Pyflakes (logic issues)
+    "I",    # isort (re-order imports in alphabetic order)
+    "N",    # pep8-naming (naming conventions)
+    "RUF",  # ruff-specific rules
+    "SIM",  # flake8-simplify (simplifiable code patterns)
+    "UP",   # pyupgrade (suggest newer Python syntax)
+    "W",    # pycodestyle (warnings, optional)
+    "YTT",  # flake8-2020 (year 2020+ traps)
+]
+
+fixable = ["ALL"]
+ignore = [
+    "ANN001", # Missing type annotation for function argument `request`
+    "ANN201", # Missing return type annotation for function
+    "ANN204", # Missing return type annotations special methods
+    "ANN401", # Dynamically typed expressions (Any) are disallowed
+    "B008",   # Do not perform function call in argument defaults (common in FastAPI)
+    "D100",   # Missing docstring in public module
+    "D102",   # Missing docstring in public method
+    "D107",   # Missing docstring in __init__ method
+    "E701",   # multiple statements on one line (colon)
+    "F821",   # Undefined name
+    "F841",   # local variable is assigned to but never used
+    "RUF001", # String contains ambiguous unicode characters
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"tests/unit/**/*.py" = ["E501"] # Allow long descriptive test function names
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
