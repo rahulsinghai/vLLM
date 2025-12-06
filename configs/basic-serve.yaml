@@ -1,0 +1,28 @@
+# vLLM Basic Serving Configuration
+# Usage: vllm serve --config configs/basic-serve.yaml
+#
+# This is the simplest config to get started. Suitable for:
+# - Development and experimentation
+# - Single GPU setups
+# - Models ≤ 7B parameters
+
+model: mistralai/Mistral-7B-Instruct-v0.3
+
+host: 0.0.0.0
+port: 8000
+
+# Let vLLM auto-detect dtype based on model config
+dtype: auto
+
+# Use up to 80% of GPU memory for KV cache (conservative default)
+gpu_memory_utilization: 0.80
+
+# Max concurrent sequences
+max_num_seqs: 64
+
+# Context window — set to model's native max or lower to save VRAM
+# Omit to use model's default
+# max_model_len: 4096
+
+# Logging
+# disable_log_requests: false

@@ -1,0 +1,39 @@
+# vLLM Advanced / Production Serving Configuration
+# Usage: vllm serve --config configs/advanced-serve.yaml
+#
+# Tuned for production workloads on multi-GPU nodes.
+
+model: meta-llama/Meta-Llama-3.1-8B-Instruct
+
+host: 0.0.0.0
+port: 8000
+
+# --- Model Configuration ---
+dtype: float16
+# quantization: awq                        # Uncomment for AWQ-quantized models
+max_model_len: 8192                         # Limit context to save KV cache memory
+# served_model_name: llama-3.1-8b          # Alias exposed via /v1/models
+
+# --- GPU & Parallelism ---
+tensor_parallel_size: 2                     # Number of GPUs for tensor parallelism
+gpu_memory_utilization: 0.92                # 92% of VRAM for KV cache (leave headroom)
+
+# --- Throughput & Batching ---
+max_num_seqs: 256                           # Max concurrent sequences in batch
+max_num_batched_tokens: 32768               # Max tokens per batch iteration
+enable_chunked_prefill: true                # Chunk long prefills to avoid starving decodes
+
+# --- Caching ---
+enable_prefix_caching: true                 # Reuse KV blocks for shared prefixes
+
+# --- Speculative Decoding (optional) ---
+# speculative_model: meta-llama/Meta-Llama-3.1-1B
+# num_speculative_tokens: 5
+
+# --- API ---
+api_key: "${VLLM_API_KEY}"                  # Require bearer token (set via env var)
+# chat_template: ./templates/llama3.jinja   # Custom chat template
+
+# --- Logging ---
+disable_log_requests: true                  # Reduce log noise in production
+# disable_log_stats: false                  # Keep stats logging
