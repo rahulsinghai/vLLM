@@ -1,0 +1,54 @@
+# Horizontal Pod Autoscaler for vLLM
+#
+# Scales based on GPU utilization via DCGM exporter metrics or custom metrics.
+# For GPU-based scaling, you need:
+#   1. NVIDIA DCGM Exporter deployed
+#   2. Prometheus Adapter configured with custom metrics
+#
+# This example uses CPU as a fallback metric.
+# Replace with custom GPU metrics in production.
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vllm-server-hpa
+  namespace: vllm
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vllm-server
+  minReplicas: 2
+  maxReplicas: 8
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 120   # wait 2min before scaling up again
+      policies:
+        - type: Pods
+          value: 1                       # add 1 pod at a time (GPU pods are expensive)
+          periodSeconds: 120
+    scaleDown:
+      stabilizationWindowSeconds: 300   # wait 5min before scaling down
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 300
+  metrics:
+    # Option 1: CPU-based (fallback)
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+    # Option 2: Custom metric — vLLM queue depth (requires Prometheus Adapter)
+    # Uncomment and configure once custom metrics pipeline is set up:
+    #
+    # - type: Pods
+    #   pods:
+    #     metric:
+    #       name: vllm_num_requests_waiting
+    #     target:
+    #       type: AverageValue
+    #       averageValue: "10"           # scale up when avg queue > 10
