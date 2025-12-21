@@ -1,0 +1,31 @@
+# Prometheus configuration for vLLM monitoring
+#
+# Scrapes vLLM's /metrics endpoint for PagedAttention, scheduling,
+# and request latency metrics.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # vLLM server metrics
+  - job_name: "vllm"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["vllm-server:8000"]
+        labels:
+          service: vllm
+          environment: dev
+
+    # Relabel to add model name (extracted from __meta if using service discovery)
+    # For static config, add it as a label above.
+
+  # Node exporter (optional — for host-level GPU/CPU/memory metrics)
+  # - job_name: "node"
+  #   static_configs:
+  #     - targets: ["node-exporter:9100"]
+
+  # DCGM exporter (optional — for detailed GPU metrics)
+  # - job_name: "dcgm"
+  #   static_configs:
+  #     - targets: ["dcgm-exporter:9400"]
