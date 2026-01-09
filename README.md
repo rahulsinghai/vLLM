@@ -83,14 +83,37 @@ An opinionated day-by-day plan to get productive with vLLM fast:
 
 ### How vLLM Compares
 
-| Feature | vLLM | TGI | Triton + TensorRT-LLM |
-|---|---|---|---|
-| PagedAttention | ✅ | ❌ | ❌ (has similar) |
-| Continuous Batching | ✅ | ✅ | ✅ |
-| OpenAI API | ✅ | ❌ (different) | ❌ (custom) |
-| Multi-GPU (TP) | ✅ | ✅ | ✅ |
-| Quantization | AWQ/GPTQ/FP8 | GPTQ/AWQ | FP8/INT8/INT4 |
-| Ease of Setup | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ |
+| Feature | vLLM | SGLang | TGI | TensorRT-LLM |
+|---|---|---|---|---|
+| PagedAttention | ✅ | ✅ (RadixAttention) | ❌ | ✅ (optimized) |
+| Continuous Batching | ✅ | ✅ | ✅ | ✅ (in-flight batching) |
+| OpenAI API | ✅ | ✅ | ❌ (different) | ❌ (custom via Triton) |
+| Multi-GPU (TP) | ✅ | ✅ | ✅ | ✅ |
+| Hardware Support | NVIDIA/AMD/Intel | NVIDIA/AMD | NVIDIA | NVIDIA only |
+| Quantization | AWQ/GPTQ/FP8 | AWQ/GPTQ/FP8 | GPTQ/AWQ | FP8/INT8/INT4/FP16 |
+| MoE Optimization | ❌ | ✅ | ❌ | ✅ |
+| Structured Output | Basic | ✅ (native) | ❌ | ❌ |
+| Function Calling | Basic | ✅ (optimized) | ❌ | ❌ |
+| Peak Performance | 600-700 tok/s | 500-600 tok/s | 400-500 tok/s | Up to 2.5× faster |
+| Model Compatibility | Broad (HuggingFace) | Broad (HuggingFace) | Limited | Requires conversion |
+| Ease of Setup | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ |
+
+**When to use vLLM:**
+- Simple, large-scale deployments with dense models (LLaMA, Mistral, Gemma family)
+- Need production reliability and flexibility across hardware (NVIDIA/AMD/Intel)
+- Want easy setup with broad HuggingFace model support
+- Standard OpenAI-compatible API is sufficient
+
+**When to use SGLang:**
+- Mixture of Expert models (Qwen, DeepSeek, Mixtral)
+- Complex LLM programs requiring function calling, JSON parsing, or constraint generation
+- Need fullstack runtime for sophisticated agent workflows
+
+**When to use TensorRT-LLM:**
+- Maximum raw speed on NVIDIA GPUs (up to 2.5× faster than vLLM)
+- Large stable production deployments where performance optimization is critical
+- Have resources for model conversion and tuning
+- Can commit to NVIDIA-only infrastructure for peak efficiency
 
 ---
 
